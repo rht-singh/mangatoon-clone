@@ -1,0 +1,30 @@
+{
+    "version": "1.0.0",
+    "name": "Comic",
+    "description": "Read your favorite comic books for free.",
+    "type": "web",
+    "launch_path": "/index.html",
+    "icons": {
+        "56": "/icons/56x56.png",
+        "112": "/icons/112x112.png",
+        "128": "/icons/128x128.png"
+    },
+    "theme_color": "#ffa500",
+    "developer": {
+        "name": "QuadBTech",
+        "url": "https://quadbtech.com"
+    },
+    "type": "web",
+    "fullscreen": "true",
+    "locales": {
+        "en-US": {
+            "name": "Comic",
+            "subtitle": "Read your favorite comic books for free.",
+            "description": "Comic app gives you wide range of free comic books from different publishers."
+        }
+    },
+    "default_locale": "en-US",
+    "dependencies": {
+        "ads-sdk": "1.4.1"
+    }
+}

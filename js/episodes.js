@@ -13,9 +13,10 @@ fetch(`http://165.22.223.28/api/manga/read_comic?id=${getParams("comic_id")}`)
             episodes.forEach((episode) => {
                 episodeHTML += `<a href="read.html?comic_name=${comic.comic_title}&episode_id=${
                     episode.episode_id
-                }" class="card"><img class="image" src="${placeholderImage}" alt="comic image" data-src="${
-                    comic.title_img.replace("https", "http") /* placeholderTestImage*/
-                }" /><h2 class="title">${episode.episode_number}</h2></a>`;
+                }" class="card"><img class="image" src="${comic.title_img.replace(
+                    "https",
+                    "http"
+                )}" alt="comic image" /><h2 class="title">${episode.episode_number}</h2></a>`;
             });
 
             document.getElementById("comic_name").innerText = comic.comic_title;
@@ -27,7 +28,9 @@ fetch(`http://165.22.223.28/api/manga/read_comic?id=${getParams("comic_id")}`)
         }
     })
     .then(() => {
-        hideLoader();
+        if (!calledOnce) {
+            hideLoader();
+        }
     })
     .catch((err) => {
         showMsg(err, true);

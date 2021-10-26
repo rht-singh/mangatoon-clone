@@ -1,12 +1,7 @@
 "use strict";
 
+let calledOnce = false;
 let categoryCalled = false;
-
-// remove after CROS issue get resolve.
-// const placeholderTestImage = "https://images.dog.ceo/breeds/cockapoo/george-bow-tie.jpeg";
-
-const placeholderImage = "images/90x140.png";
-const placeholderPageImage = "images/214x333.png";
 
 // notification sound
 const audio = new Audio("sounds/notification.mp3");
@@ -18,7 +13,9 @@ const layer = document.getElementById("layer");
 const msgBox = document.getElementById("msg-box");
 
 // loader
-function hideLoader(callLoadImage = true) {
+function hideLoader() {
+    totalUsers();
+
     const main = document.querySelector("main");
     const loader = document.getElementById("loader");
 
@@ -27,11 +24,8 @@ function hideLoader(callLoadImage = true) {
         main.style.opacity = "1";
     }, 1000);
 
-    totalUsers();
-
-    if (callLoadImage && path !== "/read.html") {
-        // load images
-        loadImages();
+    if (path !== "/read.html") {
+        calledOnce = true;
 
         // handle keypress
         setTimeout(() => {
@@ -73,7 +67,7 @@ function search() {
             searchInput.focus();
         }
     } else {
-        location.href = `/search.html?keyword=all`;
+        location.href = `/search.html?keyword=all_comic`;
     }
 }
 
@@ -94,6 +88,44 @@ function searchComic(keyword) {
         })
         .catch((err) => {
             showMsg("SEARCH COMIC <br/><br/>" + err, true);
+        });
+}
+
+// get all comics
+function getAllComics(id) {
+    fetch(`http://165.22.223.28/api/manga/comic_info`)
+        .then((data) => {
+            return data.json();
+        })
+        .then((obj) => {
+            if (obj.success) {
+                let comicHTML = "";
+                const comics = path == "/" || path == "/index.html" ? obj.data.slice(0, 4) : obj.data;
+
+                comics.forEach((comic) => {
+                    comicHTML += `<a href="comic.html?comic_id=${
+                        comic.comic_id
+                    }" class="card"><img class="image" src="${comic.title_img.replace(
+                        "https",
+                        "http"
+                    )}" alt="comic image" /><h2 class="title">${comic.comic_title}</h2></a>`;
+                });
+
+                let eleId = path == "/search.html" ? "search_result" : id;
+                document.getElementById(eleId).innerHTML = comicHTML;
+            } else if (!obj.success) {
+                showMsg(obj.error, true);
+            } else {
+                showMsg("Problem with api", false);
+            }
+        })
+        .then(() => {
+            if (!calledOnce) {
+                hideLoader();
+            }
+        })
+        .catch((err) => {
+            showMsg(err, true);
         });
 }
 
@@ -121,9 +153,10 @@ function getComicsByType(comic_type) {
                 comics.forEach((comic) => {
                     comicHTML += `<a href="comic.html?comic_id=${
                         comic.comic_id
-                    }" class="card"><img class="image" src="${placeholderImage}" alt="comic image" data-src="${
-                        comic.title_img.replace("https", "http") /* placeholderTestImage*/
-                    }" /><h2 class="title">${comic.comic_title}</h2></a>`;
+                    }" class="card"><img class="image" src="${comic.title_img.replace(
+                        "https",
+                        "http"
+                    )}" alt="comic image" /><h2 class="title">${comic.comic_title}</h2></a>`;
                 });
                 document.getElementById(type).innerHTML = comicHTML;
             } else if (!obj.success) {
@@ -136,50 +169,12 @@ function getComicsByType(comic_type) {
             if (!categoryCalled) {
                 getCategory();
                 categoryCalled = true;
-            } else {
+            } else if (!calledOnce) {
                 hideLoader();
             }
         })
         .catch((err) => {
             showMsg(`GET COMICS BY TYPE: ${type} <br/><br/>` + err, true);
-        });
-}
-
-// load image
-function loadImages() {
-    const images = document.querySelectorAll(".image");
-    if (images.length > 0) {
-        images.forEach((image) => {
-            fetch(image.dataset.src)
-                .then((data) => {
-                    return data.blob();
-                })
-                .then((imageBlob) => {
-                    const imageUrl = URL.createObjectURL(imageBlob);
-                    image.src = imageUrl;
-                })
-                .catch((err) => {
-                    showMsg(err, true);
-                });
-        });
-    } else {
-        console.error("Issue while loading images!");
-    }
-}
-
-// load page image
-function loadPageImage(id, datasetURL) {
-    const image = document.getElementById(id);
-    fetch(datasetURL)
-        .then((data) => {
-            return data.blob();
-        })
-        .then((imageBlob) => {
-            const imageUrl = URL.createObjectURL(imageBlob);
-            image.src = imageUrl;
-        })
-        .catch((err) => {
-            showMsg(err, true);
         });
 }
 
@@ -196,8 +191,8 @@ function showMsg(message, alert) {
 
     audio.play();
 
-    if (alert) {
-        hideLoader(false);
+    if (alert && !calledOnce) {
+        hideLoader();
     }
 
     document.addEventListener("keypress", hideMsg);
@@ -236,6 +231,7 @@ function handleKeyPressEvent() {
     // add keydown event
     document.addEventListener("keydown", (e) => {
         switch (e.key) {
+            // KaiOS
             case "SoftLeft":
                 search();
                 break;
@@ -244,10 +240,10 @@ function handleKeyPressEvent() {
                 window.history.back();
                 break;
 
+            // desktop and KaiOS
             case "ArrowRight":
                 if (currentButton < buttons.length) {
                     currentButton++;
-                    console.log(currentButton);
                     buttons[currentButton - 1].focus();
                 }
                 break;
@@ -255,11 +251,11 @@ function handleKeyPressEvent() {
             case "ArrowLeft":
                 if (currentButton > 1) {
                     currentButton--;
-                    console.log(currentButton);
                     buttons[currentButton - 1].focus();
                 }
                 break;
 
+            // desktop
             case "5":
                 search();
                 break;

@@ -8,9 +8,7 @@ fetch(`http://165.22.223.28/api/manga/get_comic?comic_id=${getParams("comic_id")
         if (obj.success) {
             const comic = obj.comic_info;
             const comicImage = document.getElementById("comic_image");
-            comicImage.src = placeholderImage;
-            // comicImage.setAttribute("data-src", placeholderTestImage);
-            comicImage.setAttribute("data-src", comic.title_img.replace("https", "http"));
+            comicImage.src = comic.title_img.replace("https", "http");
 
             document.getElementById("comic_name").innerText = comic.comic_title;
             document.getElementById("comic_publisher").innerText = comic.publisher;
@@ -26,7 +24,9 @@ fetch(`http://165.22.223.28/api/manga/get_comic?comic_id=${getParams("comic_id")
         }
     })
     .then(() => {
-        hideLoader();
+        if (!calledOnce) {
+            hideLoader();
+        }
     })
     .catch((err) => {
         showMsg(err, true);

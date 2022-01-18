@@ -41,4 +41,4 @@ if (keyword == "all_comic") {
 
 // search button
 const searchInput = document.getElementById("search-input");
-let notFocus = searchInput.blur() ? true : false;
+let hasFocus = searchInput.blur() ? true : false;

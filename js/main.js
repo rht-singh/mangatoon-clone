@@ -50,8 +50,8 @@ function totalUsers() {
 // search
 function search() {
     if (path == "/" || path == "/index.html" || path == "/search.html") {
-        if (notFocus) {
-            notFocus = false;
+        if (hasFocus) {
+            hasFocus = false;
             searchInput.blur();
             // do search
             let keyword = searchInput.value;
@@ -63,7 +63,7 @@ function search() {
             }
         } else {
             // take input
-            notFocus = true;
+            hasFocus = true;
             searchInput.focus();
         }
     } else {

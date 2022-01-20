@@ -5,6 +5,7 @@ fetch(`http://165.22.223.28/api/manga/read_episode?id=${getParams("episode_id")}
         return data.json();
     })
     .then((obj) => {
+        console.log(obj);
         if (obj.success) {
             const comic = obj.read_comic;
             const comicPageLoader = document.querySelector(".comic-page-loader");
@@ -18,8 +19,8 @@ fetch(`http://165.22.223.28/api/manga/read_episode?id=${getParams("episode_id")}
             let url = "";
             let page = 1;
 
-            url = comicImages[page - 1].img_url.replace("https", "http");
-            comicPage.src = url;
+            url = comicImages[page - 1]?.img_url.replace("https", "http");
+            comicPage.src = url || "https://via.placeholder.com/214x333/efefef/a5a5a5?text=Not%20Found";
             comicPage.onload = () => {
                 comicPageLoader.style.display = "none";
             };

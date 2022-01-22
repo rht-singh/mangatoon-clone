@@ -188,6 +188,7 @@ function showMsg(message, alert) {
 
     layer.style.top = "0";
     msgBox.style.transform = "translate(-50%, -50%) scale(1)";
+    document.body.style.overflowY = "hidden";
 
     audio.play();
 
@@ -203,6 +204,7 @@ function hideMsg(e) {
     if (e.key == 9) {
         layer.style.top = "-100vh";
         msgBox.style.transform = "translate(-50%, -50%) scale(0)";
+        document.body.style.overflowY = "scroll";
 
         document.removeEventListener("keypress", hideMsg);
     }

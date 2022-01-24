@@ -53,6 +53,7 @@ function search() {
         if (hasFocus) {
             hasFocus = false;
             searchInput.blur();
+
             // do search
             let keyword = searchInput.value;
 
@@ -65,6 +66,11 @@ function search() {
             // take input
             hasFocus = true;
             searchInput.focus();
+            document.getElementById("search-instruction").style.display = "block";
+
+            setTimeout(() => {
+                searchInput.value = "";
+            }, 10);
         }
     } else {
         location.href = `/search.html?keyword=all_comic`;

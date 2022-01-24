@@ -340,7 +340,7 @@ footer {
 /* -------------------- comic -------------------- */
 
 #comic-name {
-    margin: 0 8px;
+    margin: 0 12px;
     text-transform: capitalize;
 }
 
@@ -464,7 +464,7 @@ footer {
 #msg {
     min-height: 56px;
     margin-top: 12px;
-    padding-top: 12px;
+    padding-top: 18px;
     border-top: 1px solid #efefef;
 }
 

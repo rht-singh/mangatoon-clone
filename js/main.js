@@ -58,7 +58,7 @@ function search() {
             let keyword = searchInput.value;
 
             if (keyword == "") {
-                showMsg("SEARCH COMIC <br/><br/> Please enter some keyword, it can't be empty!");
+                showMsg("Please enter some keyword, it can't be empty!");
             } else {
                 searchComic(keyword);
             }
@@ -70,7 +70,7 @@ function search() {
 
             setTimeout(() => {
                 searchInput.value = "";
-            }, 10);
+            }, 1);
         }
     } else {
         location.href = `/search.html?keyword=all_comic`;
@@ -87,9 +87,9 @@ function searchComic(keyword) {
             if (obj.success) {
                 location.href = `/search.html?keyword=${keyword}`;
             } else if (!obj.success) {
-                showMsg("SEARCH COMIC <br/><br/>" + obj.error, true);
+                showMsg(obj.error, true);
             } else {
-                showMsg("SEARCH COMIC <br/><br/> Problem with api", false);
+                showMsg("SEARCH COMIC <br/><br/> Problem with api", true);
             }
         })
         .catch((err) => {
@@ -122,7 +122,7 @@ function getAllComics(id) {
             } else if (!obj.success) {
                 showMsg(obj.error, true);
             } else {
-                showMsg("Problem with api", false);
+                showMsg("ALL COMIC <br/><br/> Problem with api", true);
             }
         })
         .then(() => {
@@ -131,7 +131,7 @@ function getAllComics(id) {
             }
         })
         .catch((err) => {
-            showMsg(err, true);
+            showMsg("ALL COMIC <br/><br/>" + err, true);
         });
 }
 
@@ -166,9 +166,9 @@ function getComicsByType(comic_type) {
                 });
                 document.getElementById(type).innerHTML = comicHTML;
             } else if (!obj.success) {
-                showMsg(`GET COMICS BY TYPE: ${type} <br/><br/>` + obj.error, true);
+                showMsg(obj.error, true);
             } else {
-                showMsg(`GET COMICS BY TYPE: ${type} <br/><br/>` + "Problem with api", false);
+                showMsg(`GET COMICS BY TYPE: ${type} <br/><br/>` + "Problem with api", true);
             }
         })
         .then(() => {
@@ -196,6 +196,7 @@ function showMsg(message, alert) {
     msgBox.style.transform = "translate(-50%, -50%) scale(1)";
     document.body.style.overflowY = "hidden";
 
+    document.body.click();
     audio.play();
 
     if (alert && !calledOnce) {

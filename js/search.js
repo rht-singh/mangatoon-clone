@@ -11,6 +11,7 @@ if (keyword == "all_comic") {
             return data.json();
         })
         .then((obj) => {
+            searchInput.value = keyword;
             if (obj.success) {
                 let comicHTML = "";
                 const comics = obj.data;
@@ -26,7 +27,7 @@ if (keyword == "all_comic") {
             } else if (!obj.success) {
                 showMsg(obj.error, true);
             } else {
-                showMsg("Problem with api", false);
+                showMsg("SEARCH COMIC <br/><br/> Problem with api", true);
             }
         })
         .then(() => {
@@ -35,7 +36,7 @@ if (keyword == "all_comic") {
             }
         })
         .catch((err) => {
-            showMsg(err, true);
+            showMsg("SEARCH COMIC <br/><br/>" + err, true);
         });
 }
 

@@ -24,7 +24,7 @@ fetch(`http://165.22.223.28/api/manga/read_comic?id=${getParams("comic_id")}`)
         } else if (!obj.success) {
             showMsg(obj.error, true);
         } else {
-            showMsg("Problem with api", false);
+            showMsg("COMIC EPISODES <br/><br/> Problem with api", true);
         }
     })
     .then(() => {
@@ -33,5 +33,5 @@ fetch(`http://165.22.223.28/api/manga/read_comic?id=${getParams("comic_id")}`)
         }
     })
     .catch((err) => {
-        showMsg(err, true);
+        showMsg("COMIC EPISODES <br/><br/>" + err, true);
     });

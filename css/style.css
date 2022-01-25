@@ -344,8 +344,33 @@ footer {
     text-transform: capitalize;
 }
 
+#fullscreen-instruction {
+    margin: 12px 0;
+    padding: 8px;
+    font-size: 11px;
+    border-radius: 4px;
+    border: 1px solid orange;
+    background-color: #ffa50020;
+}
+
+.img-zoom-lens {
+    position: absolute;
+    border: 1px solid #efefef;
+    /*set the size of the lens:*/
+    width: 44px;
+    height: 44px;
+}
+
+.zoomed-image {
+    position: absolute;
+    width: 75vw;
+    height: 35vw;
+    box-shadow: 0 0 400px rgb(0 0 0 / 100%);
+}
+
 #image-box {
     position: relative;
+    overflow: hidden;
 }
 
 #comic-page {

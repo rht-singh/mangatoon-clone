@@ -106,7 +106,7 @@ function getAllComics(id) {
         .then((obj) => {
             if (obj.success) {
                 let comicHTML = "";
-                const comics = path == "/" || path == "/index.html" ? obj.data.slice(0, 4) : obj.data;
+                const comics = path == "/" || path == "/index.html" ? obj.data.slice(0, 4).reverse() : obj.data;
 
                 comics.forEach((comic) => {
                     comicHTML += `<a href="comic.html?comic_id=${
@@ -273,5 +273,32 @@ function handleKeyPressEvent() {
                 window.history.back();
                 break;
         }
+    });
+}
+
+function imageLoadingStatus(imageURL, elementId) {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+
+        xhr.open("GET", imageURL);
+        xhr.responseType = "arraybuffer";
+
+        xhr.onprogress = function (e) {
+            if (e.lengthComputable) {
+                const loaded = Math.round((e.loaded / e.total) * 100) + "%";
+                document.getElementById(elementId).innerText = loaded;
+            }
+        };
+
+        xhr.onloadend = function () {
+            const blob = new Blob([this.response]);
+            resolve(window.URL.createObjectURL(blob));
+        };
+
+        xhr.onerror = function (e) {
+            reject(e);
+        };
+
+        xhr.send();
     });
 }

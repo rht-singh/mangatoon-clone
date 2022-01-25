@@ -19,19 +19,14 @@ fetch(`http://165.22.223.28/api/manga/read_episode?id=${getParams("episode_id")}
             let page = 1;
 
             url = comicImages[page - 1]?.img_url.replace("https", "http");
-            comicPage.src = url || "images/214x333.png";
-            comicPage.onload = () => {
-                comicPageLoader.style.display = "none";
-            };
+            comicPage.src = "images/214x333.png";
+            showComicPage(url, comicPage, comicPageLoader);
 
             // next page
             function next() {
                 page++;
                 url = comicImages[page - 1].img_url.replace("https", "http");
-                comicPage.src = url;
-                comicPage.onload = () => {
-                    comicPageLoader.style.display = "none";
-                };
+                showComicPage(url, comicPage, comicPageLoader);
 
                 document.getElementById("current-page").innerText = page;
                 document.getElementById("next").focus();
@@ -41,10 +36,7 @@ fetch(`http://165.22.223.28/api/manga/read_episode?id=${getParams("episode_id")}
             function prev() {
                 page--;
                 url = comicImages[page - 1].img_url.replace("https", "http");
-                comicPage.src = url;
-                comicPage.onload = () => {
-                    comicPageLoader.style.display = "none";
-                };
+                showComicPage(url, comicPage, comicPageLoader);
 
                 document.getElementById("current-page").innerText = page;
                 document.getElementById("previous").focus();
@@ -53,14 +45,16 @@ fetch(`http://165.22.223.28/api/manga/read_episode?id=${getParams("episode_id")}
             document.addEventListener("keydown", (e) => {
                 if (e.key == "ArrowRight") {
                     if (page < totalPages) {
-                        comicPageLoader.style.display = "block";
+                        comicPageLoader.classList.remove("hide");
+                        comicPageLoader.classList.add("show");
                         next();
                     } else {
                         showMsg("This is the last page!", false);
                     }
                 } else if (e.key == "ArrowLeft") {
                     if (page > 1) {
-                        comicPageLoader.style.display = "block";
+                        comicPageLoader.classList.remove("hide");
+                        comicPageLoader.classList.add("show");
                         prev();
                     } else {
                         showMsg("This is the first page!", false);
@@ -85,3 +79,17 @@ fetch(`http://165.22.223.28/api/manga/read_episode?id=${getParams("episode_id")}
     .catch((err) => {
         showMsg("READ COMIC <br/><br/>" + err, true);
     });
+
+function showComicPage(url, comicPage, comicPageLoader) {
+    imageLoadingStatus(url, "loaded")
+        .then((image) => {
+            comicPage.src = image;
+            comicPage.onload = () => {
+                comicPageLoader.classList.remove("show");
+                comicPageLoader.classList.add("hide");
+            };
+        })
+        .catch(() => {
+            comicPage.src = "images/not-found.png";
+        });
+}

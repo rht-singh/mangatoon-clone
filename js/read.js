@@ -1,5 +1,8 @@
 "use strict";
 
+let loading = true;
+let zoomedIn = false;
+
 fetch(`http://165.22.223.28/api/manga/read_episode?id=${getParams("episode_id")}`)
     .then((data) => {
         return data.json();
@@ -42,49 +45,55 @@ fetch(`http://165.22.223.28/api/manga/read_episode?id=${getParams("episode_id")}
                 document.getElementById("previous").focus();
             }
 
-            let fullScreen = false;
-
             document.addEventListener("keydown", (e) => {
                 if (e.key == "ArrowRight") {
                     if (page < totalPages) {
-                        comicPageLoader.classList.remove("hide");
-                        comicPageLoader.classList.add("show");
-                        next();
+                        if (!loading) {
+                            comicPageLoader.classList.remove("hide");
+                            comicPageLoader.classList.add("show");
+                            next();
+                            loading = true;
+                        } else {
+                            showMsg("Please wait, we are loading your requested page.", false);
+                        }
                     } else {
                         showMsg("This is the last page!", false);
                     }
 
-                    if (fullScreen) {
-                        exitFullscreen();
-                        fullScreen = false;
+                    if (zoomedIn) {
+                        imageZoomOut();
+                        zoomedIn = false;
                     }
                 } else if (e.key == "ArrowLeft") {
                     if (page > 1) {
-                        comicPageLoader.classList.remove("hide");
-                        comicPageLoader.classList.add("show");
-                        prev();
+                        if (!loading) {
+                            comicPageLoader.classList.remove("hide");
+                            comicPageLoader.classList.add("show");
+                            prev();
+                            loading = true;
+                        } else {
+                            showMsg("Please wait, we are loading your requested page.", false);
+                        }
                     } else {
                         showMsg("This is the first page!", false);
                     }
 
-                    if (fullScreen) {
-                        exitFullscreen();
-                        fullScreen = false;
+                    if (zoomedIn) {
+                        imageZoomOut();
+                        zoomedIn = false;
                     }
                 } else if (e.key == "SoftLeft" || e.key == "5") {
                     search();
                 } else if (e.key == "SoftRight" || e.key == "0") {
                     window.history.back();
                 } else if (e.key == "Enter") {
-                    imageZoom("comic-page");
-
-                    // if (!fullScreen) {
-                    //     requestFullscreen(comicPage);
-                    //     fullScreen = true;
-                    // } else {
-                    //     exitFullscreen();
-                    //     fullScreen = false;
-                    // }
+                    if (!zoomedIn && !loading) {
+                        imageZoomIn("comic-page");
+                        zoomedIn = true;
+                    } else {
+                        imageZoomOut();
+                        zoomedIn = false;
+                    }
                 }
             });
         } else if (!obj.success) {
@@ -107,10 +116,13 @@ function showComicPage(url, comicPage, comicPageLoader) {
     imageLoadingStatus(url, "loaded")
         .then((image) => {
             comicPage.src = image;
-            comicPage.onload = () => {
+            comicPage.onload = (e) => {
                 comicPageLoader.classList.remove("show");
                 comicPageLoader.classList.add("hide");
                 document.getElementById("loaded").innerText = "0%";
+                loading = false;
+                e.key = 9;
+                hideMsg(e);
             };
         })
         .catch(() => {
@@ -118,35 +130,7 @@ function showComicPage(url, comicPage, comicPageLoader) {
         });
 }
 
-var requestFullscreen = function (ele) {
-    if (ele.requestFullscreen) {
-        ele.requestFullscreen();
-    } else if (ele.webkitRequestFullscreen) {
-        ele.webkitRequestFullscreen();
-    } else if (ele.mozRequestFullScreen) {
-        ele.mozRequestFullScreen();
-    } else if (ele.msRequestFullscreen) {
-        ele.msRequestFullscreen();
-    } else {
-        showMsg("Fullscreen API is not supported.", true);
-    }
-};
-
-var exitFullscreen = function () {
-    if (document.exitFullscreen) {
-        document.exitFullscreen();
-    } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-    } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-    } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
-    } else {
-        showMsg("Fullscreen API is not supported.", true);
-    }
-};
-
-function imageZoom(imgID) {
+function imageZoomIn(imgID) {
     var img, lens, zoomedImage, cx, cy;
     img = document.getElementById(imgID);
     // result = document.getElementById(resultID);
@@ -159,44 +143,54 @@ function imageZoom(imgID) {
     img.parentElement.insertBefore(lens, img);
     img.parentElement.insertBefore(zoomedImage, img);
     /* Calculate the ratio between result DIV and lens: */
-    cx = 2;
-    cy = 2;
+    cx = 3;
+    cy = 3;
     /* Set background properties for the result DIV */
     zoomedImage.style.backgroundImage = "url('" + img.src + "')";
     zoomedImage.style.backgroundSize = img.width * cx + "px " + img.height * cy + "px";
     /* Execute a function when someone moves the cursor over the image, or the lens: */
-    lens.addEventListener("mousemove", moveLens);
-    img.addEventListener("mousemove", moveLens);
+    // lens.addEventListener("mousemove", moveLens);
     /* And also for touch screens: */
-    lens.addEventListener("touchmove", moveLens);
-    img.addEventListener("touchmove", moveLens);
+    let dirX = 0;
+    let dirY = 0;
+    let steps = 1;
+
+    document.addEventListener("keypress", (e) => {
+        if (e.key == "4") {
+            dirX -= steps;
+            if (dirX < 0) {
+                dirX = 0;
+            }
+        } else if (e.key == "6") {
+            dirX += steps;
+            if (dirX > img.width - lens.offsetWidth) {
+                dirX = img.width - lens.offsetWidth;
+            }
+        } else if (e.key == "8") {
+            dirY -= steps;
+            if (dirY < 0) {
+                dirY = 0;
+            }
+        } else if (e.key == "2") {
+            dirY += steps;
+            if (dirY > img.height - lens.offsetHeight) {
+                dirY = img.height - lens.offsetHeight;
+            }
+        }
+        moveLens(e);
+    });
+
     function moveLens(e) {
         var pos, pos2, x, y, x2, y2;
         /* Prevent any other actions that may occur when moving over the image */
         e.preventDefault();
-        /* Get the cursor's x and y positions: */
-        pos = getCursorPos(e);
         /* Calculate the position of the lens: */
-        x = pos.x - lens.offsetWidth / 2;
-        y = pos.y - lens.offsetHeight / 2;
-        /* Prevent the lens from being positioned outside the image: */
-        if (x > img.width - lens.offsetWidth) {
-            x = img.width - lens.offsetWidth;
-        }
-        if (x < 0) {
-            x = 0;
-        }
-        if (y > img.height - lens.offsetHeight) {
-            y = img.height - lens.offsetHeight;
-        }
-        if (y < 0) {
-            y = 0;
-        }
+        x = dirX;
+        y = dirY;
 
-        pos2 = getCursorPos(e);
         /* Calculate the position of the lens: */
-        x2 = pos2.x - zoomedImage.offsetWidth / 2;
-        y2 = pos2.y - zoomedImage.offsetHeight / 2;
+        x2 = 0;
+        y2 = 0;
         /* Prevent the lens from being positioned outside the image: */
         if (x2 > img.width - zoomedImage.offsetWidth) {
             x2 = img.width - zoomedImage.offsetWidth;
@@ -218,21 +212,46 @@ function imageZoom(imgID) {
         zoomedImage.style.left = x2 + "px";
         zoomedImage.style.top = y2 + "px";
         /* Display what the lens "sees": */
-        zoomedImage.style.backgroundPosition = "-" + x * (cx / 1.375) + "px -" + y * cy + "px";
+        zoomedImage.style.backgroundPosition = "-" + x * (cx / 0.925) + "px -" + y * (cy / 1.28) + "px";
     }
-    function getCursorPos(e) {
-        var a,
-            x = 0,
-            y = 0;
-        e = e || window.event;
-        /* Get the x and y positions of the image: */
-        a = img.getBoundingClientRect();
-        /* Calculate the cursor's x and y coordinates, relative to the image: */
-        x = e.pageX - a.left;
-        y = e.pageY - a.top;
-        /* Consider any page scrolling: */
-        x = x - window.pageXOffset;
-        y = y - window.pageYOffset;
-        return { x: x, y: y };
+
+    openFullscreen(zoomedImage);
+}
+
+function imageZoomOut() {
+    if (zoomedIn) {
+        closeFullscreen();
+        document.querySelector(".img-zoom-lens").remove();
+        document.querySelector(".zoomed-image").remove();
+    }
+}
+
+/* View in fullscreen */
+function openFullscreen(elem) {
+    if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) {
+        /* Safari */
+        elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) {
+        /* IE11 */
+        elem.msRequestFullscreen();
+    } else {
+        showComicPage("Fullscreen API is not supported!", false);
+    }
+}
+
+/* Close fullscreen */
+function closeFullscreen() {
+    if (document.exitFullscreen) {
+        document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+        /* Safari */
+        document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) {
+        /* IE11 */
+        document.msExitFullscreen();
+    } else {
+        showComicPage("Fullscreen API is not supported!", false);
     }
 }

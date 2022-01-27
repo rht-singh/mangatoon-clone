@@ -14,23 +14,30 @@ const msgBox = document.getElementById("msg-box");
 
 // loader
 function hideLoader() {
-    totalUsers();
-
     const main = document.querySelector("main");
     const loader = document.getElementById("loader");
 
     loader.style.top = "100vh";
-    setTimeout(() => {
-        main.style.opacity = "1";
-    }, 1000);
 
-    if (path !== "/read.html") {
-        calledOnce = true;
-
-        // handle keypress
+    if (navigator.onLine) {
         setTimeout(() => {
-            handleKeyPressEvent();
+            main.style.opacity = "1";
         }, 1000);
+
+        totalUsers();
+
+        if (path !== "/read.html") {
+            calledOnce = true;
+
+            // handle keypress
+            setTimeout(() => {
+                handleKeyPressEvent();
+            }, 1000);
+        }
+    } else {
+        calledOnce = true;
+        main.style.visibility = "hidden";
+        showMsg("NO INTERNET <br/><br/> Please connect to internet first.", true);
     }
 }
 

@@ -3,113 +3,133 @@
 let loading = true;
 let zoomedIn = false;
 
-fetch(`http://165.22.223.28/api/manga/read_episode?id=${getParams("episode_id")}`)
-    .then((data) => {
-        return data.json();
-    })
-    .then((obj) => {
-        if (obj.success) {
-            const comic = obj.read_comic;
-            const comicPageLoader = document.querySelector(".comic-page-loader");
-            document.getElementById("title").innerText = getParams("comic_name") + " - " + comic.episode_number;
+if (navigator.onLine) {
+    fetch(`http://165.22.223.28/api/manga/read_episode?id=${getParams("episode_id")}`)
+        .then((data) => {
+            return data.json();
+        })
+        .then((obj) => {
+            if (obj.success) {
+                const comic = obj.read_comic;
+                const comicPageLoader = document.querySelector(".comic-page-loader");
+                document.getElementById("title").innerText = getParams("comic_name") + " - " + comic.episode_number;
 
-            const comicImages = comic.comic_images;
-            const totalPages = comic.comic_images.length;
-            const comicPage = document.getElementById("comic-page");
-            document.getElementById("total-pages").innerText = totalPages;
+                const comicImages = comic.comic_images;
+                const totalPages = comic.comic_images.length;
+                const comicPage = document.getElementById("comic-page");
+                document.getElementById("total-pages").innerText = totalPages;
 
-            let url = "";
-            let page = 1;
+                let url = "";
+                let page = 1;
 
-            url = comicImages[page - 1]?.img_url.replace("https", "http");
-            comicPage.src = "images/214x333.png";
-            showComicPage(url, comicPage, comicPageLoader);
-
-            // next page
-            function next() {
-                page++;
-                url = comicImages[page - 1].img_url.replace("https", "http");
+                url = comicImages[page - 1]?.img_url.replace("https", "http");
+                comicPage.src = "images/214x333.png";
                 showComicPage(url, comicPage, comicPageLoader);
 
-                document.getElementById("current-page").innerText = page;
-                document.getElementById("next").focus();
-            }
+                // next page
+                function next() {
+                    if (navigator.onLine) {
+                        page++;
+                        url = comicImages[page - 1].img_url.replace("https", "http");
+                        showComicPage(url, comicPage, comicPageLoader);
 
-            // previous page
-            function prev() {
-                page--;
-                url = comicImages[page - 1].img_url.replace("https", "http");
-                showComicPage(url, comicPage, comicPageLoader);
-
-                document.getElementById("current-page").innerText = page;
-                document.getElementById("previous").focus();
-            }
-
-            document.addEventListener("keydown", (e) => {
-                if (e.key == "ArrowRight") {
-                    if (page < totalPages) {
-                        if (!loading) {
-                            comicPageLoader.classList.remove("hide");
-                            comicPageLoader.classList.add("show");
-                            next();
-                            loading = true;
-                        } else {
-                            showMsg("Please wait, we are loading your requested page.", false);
-                        }
+                        document.getElementById("current-page").innerText = page;
+                        document.getElementById("next").focus();
                     } else {
-                        showMsg("This is the last page!", false);
-                    }
-
-                    if (zoomedIn) {
-                        imageZoomOut();
-                        zoomedIn = false;
-                    }
-                } else if (e.key == "ArrowLeft") {
-                    if (page > 1) {
-                        if (!loading) {
-                            comicPageLoader.classList.remove("hide");
-                            comicPageLoader.classList.add("show");
-                            prev();
-                            loading = true;
-                        } else {
-                            showMsg("Please wait, we are loading your requested page.", false);
-                        }
-                    } else {
-                        showMsg("This is the first page!", false);
-                    }
-
-                    if (zoomedIn) {
-                        imageZoomOut();
-                        zoomedIn = false;
-                    }
-                } else if (e.key == "SoftLeft" || e.key == "5") {
-                    search();
-                } else if (e.key == "SoftRight" || e.key == "0") {
-                    window.history.back();
-                } else if (e.key == "Enter") {
-                    if (!zoomedIn && !loading) {
-                        imageZoomIn("comic-page");
-                        zoomedIn = true;
-                    } else {
-                        imageZoomOut();
-                        zoomedIn = false;
+                        showMsg("NO INTERNET <br/><br/> Please connect to internet first.", true);
                     }
                 }
-            });
-        } else if (!obj.success) {
-            showMsg(obj.error, true);
-        } else {
-            showMsg("READ COMIC <br/><br/> Problem with api", true);
-        }
-    })
-    .then(() => {
-        if (!calledOnce) {
-            hideLoader();
-        }
-    })
-    .catch((err) => {
-        showMsg("READ COMIC <br/><br/>" + err, true);
-    });
+
+                // previous page
+                function prev() {
+                    if (navigator.onLine) {
+                        page--;
+                        url = comicImages[page - 1].img_url.replace("https", "http");
+                        showComicPage(url, comicPage, comicPageLoader);
+
+                        document.getElementById("current-page").innerText = page;
+                        document.getElementById("previous").focus();
+                    } else {
+                        showMsg("NO INTERNET <br/><br/> Please connect to internet first.", true);
+                    }
+                }
+
+                document.addEventListener("keydown", (e) => {
+                    if (e.key == "ArrowRight") {
+                        if (page < totalPages) {
+                            if (!loading) {
+                                comicPageLoader.classList.remove("hide");
+                                comicPageLoader.classList.add("show");
+                                next();
+                                loading = true;
+                            } else {
+                                showMsg("Please wait, we are loading your requested page.", false);
+                            }
+                        } else {
+                            showMsg("This is the last page!", false);
+                        }
+
+                        if (zoomedIn) {
+                            imageZoomOut();
+                            zoomedIn = false;
+                        }
+                    } else if (e.key == "ArrowLeft") {
+                        if (page > 1) {
+                            if (!loading) {
+                                comicPageLoader.classList.remove("hide");
+                                comicPageLoader.classList.add("show");
+                                prev();
+                                loading = true;
+                            } else {
+                                showMsg("Please wait, we are loading your requested page.", false);
+                            }
+                        } else {
+                            showMsg("This is the first page!", false);
+                        }
+
+                        if (zoomedIn) {
+                            imageZoomOut();
+                            zoomedIn = false;
+                        }
+                    } else if (e.key == "SoftLeft" || e.key == "5") {
+                        if (navigator.onLine) {
+                            search();
+                        } else {
+                            showMsg("NO INTERNET <br/><br/> Please connect to internet first.", true);
+                        }
+                    } else if (e.key == "SoftRight" || e.key == "0") {
+                        if (navigator.onLine) {
+                            window.history.back();
+                        } else {
+                            showMsg("NO INTERNET <br/><br/> Please connect to internet first.", true);
+                        }
+                    } else if (e.key == "Enter") {
+                        if (!zoomedIn && !loading) {
+                            imageZoomIn("comic-page");
+                            zoomedIn = true;
+                        } else {
+                            imageZoomOut();
+                            zoomedIn = false;
+                        }
+                    }
+                });
+            } else if (!obj.success) {
+                showMsg(obj.error, true);
+            } else {
+                showMsg("READ COMIC <br/><br/> Problem with api", true);
+            }
+        })
+        .then(() => {
+            if (!calledOnce) {
+                hideLoader();
+            }
+        })
+        .catch((err) => {
+            showMsg("READ COMIC <br/><br/>" + err, true);
+        });
+} else {
+    showMsg("NO INTERNET <br/><br/> Please connect to internet first.", true);
+}
 
 // load image and show
 function showComicPage(url, comicPage, comicPageLoader) {

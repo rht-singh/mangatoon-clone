@@ -1,10 +1,14 @@
 "use strict";
 
-if (getLocalStorageItem("comic_token")) {
-    userInfo(getLocalStorageItem("comic_token"));
+if (navigator.onLine) {
+    if (getLocalStorageItem("comic_token")) {
+        userInfo(getLocalStorageItem("comic_token"));
+    } else {
+        getIpAndRegister();
+        showMsg("Welcome to Comic!", false);
+    }
 } else {
-    getIpAndRegister();
-    showMsg("Welcome to Comic!", false);
+    showMsg("NO INTERNET <br/><br/> Please connect to internet first.", true);
 }
 
 //  get user ip address

@@ -54,7 +54,7 @@ if (navigator.onLine) {
                     }
                 }
 
-                document.addEventListener("keydown", (e) => {
+                document.addEventListener("keyup", (e) => {
                     if (e.key == "ArrowRight") {
                         if (page < totalPages) {
                             if (!loading) {
@@ -186,12 +186,12 @@ function imageZoomIn(imgID) {
             if (dirX > img.width - lens.offsetWidth) {
                 dirX = img.width - lens.offsetWidth;
             }
-        } else if (e.key == "8") {
+        } else if (e.key == "2") {
             dirY -= steps;
             if (dirY < 0) {
                 dirY = 0;
             }
-        } else if (e.key == "2") {
+        } else if (e.key == "8") {
             dirY += steps;
             if (dirY > img.height - lens.offsetHeight) {
                 dirY = img.height - lens.offsetHeight;

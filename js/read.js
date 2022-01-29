@@ -105,8 +105,8 @@ if (navigator.onLine) {
                         }
                     } else if (e.key == "Enter") {
                         if (!zoomedIn && !loading) {
-                            imageZoomIn("comic-page");
                             zoomedIn = true;
+                            imageZoomIn("comic-page");
                         } else {
                             imageZoomOut();
                             zoomedIn = false;
@@ -152,6 +152,10 @@ function showComicPage(url, comicPage, comicPageLoader) {
 
 function imageZoomIn(imgID) {
     var img, lens, zoomedImage, cx, cy;
+    let dirX = 0;
+    let dirY = 0;
+    let steps = 1;
+
     img = document.getElementById(imgID);
     // result = document.getElementById(resultID);
     /* Create lens: */
@@ -162,43 +166,76 @@ function imageZoomIn(imgID) {
     /* Insert lens: */
     img.parentElement.insertBefore(lens, img);
     img.parentElement.insertBefore(zoomedImage, img);
+
+    let maxWidth = img.width - lens.offsetWidth;
+    let maxHeight = img.height - lens.offsetHeight;
+
     /* Calculate the ratio between result DIV and lens: */
-    cx = 3;
-    cy = 3;
+    cx = 2;
+    cy = 2;
     /* Set background properties for the result DIV */
     zoomedImage.style.backgroundImage = "url('" + img.src + "')";
     zoomedImage.style.backgroundSize = img.width * cx + "px " + img.height * cy + "px";
     /* Execute a function when someone moves the cursor over the image, or the lens: */
     // lens.addEventListener("mousemove", moveLens);
     /* And also for touch screens: */
-    let dirX = 0;
-    let dirY = 0;
-    let steps = 1;
 
-    document.addEventListener("keypress", (e) => {
-        if (e.key == "4") {
-            dirX -= steps;
-            if (dirX < 0) {
+    if (zoomedIn) {
+        document.addEventListener("keyup", (e) => {
+            if (e.key == "ArrowUp" && cx < 3) {
+                cx += 1;
+                cy += 1;
+                maxWidth += (lens.offsetWidth / 5) * cx;
+                maxHeight += (lens.offsetHeight / 1.5) * cy;
+
                 dirX = 0;
-            }
-        } else if (e.key == "6") {
-            dirX += steps;
-            if (dirX > img.width - lens.offsetWidth) {
-                dirX = img.width - lens.offsetWidth;
-            }
-        } else if (e.key == "2") {
-            dirY -= steps;
-            if (dirY < 0) {
                 dirY = 0;
+                /* Set background properties for the result DIV */
+                zoomedImage.style.backgroundImage = "url('" + img.src + "')";
+                zoomedImage.style.backgroundSize = img.width * cx + "px " + img.height * cy + "px";
+                // reset lens position
+                moveLens(e);
+            } else if (e.key == "ArrowDown" && cx >= 3) {
+                cx -= 1;
+                cy -= 1;
+                maxWidth -= (lens.offsetWidth / 5) * (cx + 1);
+                maxHeight -= (lens.offsetHeight / 1.5) * (cy + 1);
+
+                dirX = 0;
+                dirY = 0;
+                /* Set background properties for the result DIV */
+                zoomedImage.style.backgroundImage = "url('" + img.src + "')";
+                zoomedImage.style.backgroundSize = img.width * cx + "px " + img.height * cy + "px";
+                // reset lens position
+                moveLens(e);
             }
-        } else if (e.key == "8") {
-            dirY += steps;
-            if (dirY > img.height - lens.offsetHeight) {
-                dirY = img.height - lens.offsetHeight;
+        });
+
+        document.addEventListener("keypress", (e) => {
+            if (e.key == "4") {
+                dirX -= steps;
+                if (dirX < 0) {
+                    dirX = 0;
+                }
+            } else if (e.key == "6") {
+                dirX += steps;
+                if (dirX > maxWidth) {
+                    dirX = maxWidth;
+                }
+            } else if (e.key == "2") {
+                dirY -= steps;
+                if (dirY < 0) {
+                    dirY = 0;
+                }
+            } else if (e.key == "8") {
+                dirY += steps;
+                if (dirY > maxHeight) {
+                    dirY = maxHeight;
+                }
             }
-        }
-        moveLens(e);
-    });
+            moveLens(e);
+        });
+    }
 
     function moveLens(e) {
         var pos, pos2, x, y, x2, y2;
@@ -225,14 +262,14 @@ function imageZoomIn(imgID) {
         if (y2 < 0) {
             y2 = 0;
         }
-        /* Set the position of the lens: */
+        // /* Set the position of the lens: */
         lens.style.left = x + "px";
         lens.style.top = y + "px";
         /* Set the position of the zoomed image: */
         zoomedImage.style.left = x2 + "px";
         zoomedImage.style.top = y2 + "px";
         /* Display what the lens "sees": */
-        zoomedImage.style.backgroundPosition = "-" + x * (cx / 0.925) + "px -" + y * (cy / 1.28) + "px";
+        zoomedImage.style.backgroundPosition = "-" + x * (cx - 0.24 * cx) + "px -" + y * (cy - 0.395 * cy) + "px";
     }
 
     openFullscreen(zoomedImage);

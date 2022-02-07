@@ -1,7 +1,7 @@
 "use strict";
 
 if (navigator.onLine) {
-    fetch(`http://165.22.223.28/api/manga/get_comic?comic_id=${getParams("comic_id")}`)
+    fetch(`${baseURL}/api/manga/get_comic?comic_id=${getParams("comic_id")}`)
         .then((data) => {
             return data.json();
         })

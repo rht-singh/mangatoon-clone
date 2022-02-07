@@ -7,7 +7,7 @@ if (navigator.onLine) {
         // get all comics
         getAllComics();
     } else {
-        fetch(`http://165.22.223.28/api/manga/search?search=${keyword}`)
+        fetch(`${baseURL}/api/manga/search?search=${keyword}`)
             .then((data) => {
                 return data.json();
             })

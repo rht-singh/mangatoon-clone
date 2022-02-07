@@ -2,6 +2,7 @@
 
 let calledOnce = false;
 let categoryCalled = false;
+const baseURL = "https://kaiostestapi.quadbtech.com";
 
 // notification sound
 const audio = new Audio("sounds/notification.mp3");
@@ -42,7 +43,7 @@ function hideLoader() {
 }
 
 function totalUsers() {
-    fetch("http://165.22.223.28/api/manga/total_visitors")
+    fetch(`${baseURL}/api/manga/total_visitors`)
         .then((data) => {
             return data.json();
         })
@@ -86,7 +87,7 @@ function search() {
 
 // search comics
 function searchComic(keyword) {
-    fetch(`http://165.22.223.28/api/manga/search?search=${keyword}`)
+    fetch(`${baseURL}/api/manga/search?search=${keyword}`)
         .then((data) => {
             return data.json();
         })
@@ -106,7 +107,7 @@ function searchComic(keyword) {
 
 // get all comics
 function getAllComics(id) {
-    fetch(`http://165.22.223.28/api/manga/comic_info`)
+    fetch(`${baseURL}/api/manga/comic_info`)
         .then((data) => {
             return data.json();
         })
@@ -146,7 +147,7 @@ function getAllComics(id) {
 function getComicsByType(comic_type) {
     const type = comic_type == "new" ? "recent_comic" : "top_ten_comic";
 
-    fetch(`http://165.22.223.28/api/manga/${type}`)
+    fetch(`${baseURL}/api/manga/${type}`)
         .then((data) => {
             return data.json();
         })

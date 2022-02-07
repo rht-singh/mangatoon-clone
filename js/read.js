@@ -4,7 +4,7 @@ let loading = true;
 let zoomedIn = false;
 
 if (navigator.onLine) {
-    fetch(`http://165.22.223.28/api/manga/read_episode?id=${getParams("episode_id")}`)
+    fetch(`${baseURL}/api/manga/read_episode?id=${getParams("episode_id")}`)
         .then((data) => {
             return data.json();
         })

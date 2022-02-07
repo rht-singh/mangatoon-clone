@@ -27,7 +27,7 @@ function getIpAndRegister() {
 
 // register
 function register(ip) {
-    fetch("http://165.22.223.28/api/manga/register", {
+    fetch(`${baseURL}/api/manga/register`, {
         method: "POST",
         headers: {
             "Content-type": "application/json; charset=UTF-8",
@@ -59,7 +59,7 @@ function register(ip) {
 
 // get user info
 function userInfo(token) {
-    fetch(`http://165.22.223.28/api/manga/user_info?token=${token}`)
+    fetch(`${baseURL}/api/manga/user_info?token=${token}`)
         .then((data) => {
             return data.json();
         })
@@ -80,7 +80,7 @@ function userInfo(token) {
 
 // get all category
 function getCategory() {
-    fetch(`http://165.22.223.28/api/manga/get_category`)
+    fetch(`${baseURL}/api/manga/get_category`)
         .then((data) => {
             return data.json();
         })

@@ -22,7 +22,7 @@ if (navigator.onLine) {
                 let url = "";
                 let page = 1;
 
-                url = comicImages[page - 1]?.img_url.replace("https", "http");
+                url = comicImages[page - 1]?.img_url.replace("http://165.22.223.28", baseURL);
                 comicPage.src = "images/214x333.png";
                 showComicPage(url, comicPage, comicPageLoader);
 
@@ -30,7 +30,7 @@ if (navigator.onLine) {
                 function next() {
                     if (navigator.onLine) {
                         page++;
-                        url = comicImages[page - 1].img_url.replace("https", "http");
+                        url = comicImages[page - 1].img_url.replace("http://165.22.223.28", baseURL);
                         showComicPage(url, comicPage, comicPageLoader);
 
                         document.getElementById("current-page").innerText = page;
@@ -44,7 +44,7 @@ if (navigator.onLine) {
                 function prev() {
                     if (navigator.onLine) {
                         page--;
-                        url = comicImages[page - 1].img_url.replace("https", "http");
+                        url = comicImages[page - 1].img_url.replace("http://165.22.223.28", baseURL);
                         showComicPage(url, comicPage, comicPageLoader);
 
                         document.getElementById("current-page").innerText = page;

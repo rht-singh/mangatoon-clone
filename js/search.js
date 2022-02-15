@@ -20,8 +20,8 @@ if (navigator.onLine) {
                         comicHTML += `<a href="comic.html?comic_id=${
                             comic.comic_id
                         }" class="card"><img class="image" src="${comic.title_img.replace(
-                            "https",
-                            "http"
+                            "http://165.22.223.28",
+                            baseURL
                         )}" alt="comic image" /><h2 class="title">${comic.comic_title}</h2></a>`;
                     });
                     document.getElementById("search_result").innerHTML = comicHTML;

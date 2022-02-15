@@ -15,8 +15,8 @@ if (navigator.onLine) {
                     episodeHTML += `<a href="read.html?comic_name=${comic.comic_title}&episode_id=${
                         episode.episode_id
                     }" class="card"><img class="image" src="${comic.title_img.replace(
-                        "https",
-                        "http"
+                        "http://165.22.223.28",
+                        baseURL
                     )}" alt="comic image" /><h2 class="title">${episode.episode_number}</h2></a>`;
                 });
 

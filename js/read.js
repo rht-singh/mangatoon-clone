@@ -22,7 +22,7 @@ if (navigator.onLine) {
                 let url = "";
                 let page = 1;
 
-                url = comicImages[page - 1]?.img_url.replace("https://165.22.223.28", baseURL
+                url = comicImages[page - 1]?.img_url.replace("https://165.22.223.28", baseURL);
                 comicPage.src = "images/214x333.png";
                 showComicPage(url, comicPage, comicPageLoader);
 

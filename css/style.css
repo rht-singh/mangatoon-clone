@@ -49,7 +49,12 @@ p {
     right: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(305deg, #ff5722 -100%, orange 50%, #ff5722 200%);
+    background: linear-gradient(
+        305deg,
+        #ff5722 -100%,
+        orange 50%,
+        #ff5722 200%
+    );
     transition: all 1.5s cubic-bezier(0.55, 0.06, 0.68, 0.19);
 }
 
@@ -330,7 +335,7 @@ footer {
     margin-top: 18px;
     text-align: center;
     border-radius: 4px;
-    background-color: #a5a5a5;
+    background-color: rgba(255, 89, 56, 0.9);
 }
 
 #read-now:focus {

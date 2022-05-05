@@ -38,7 +38,10 @@ function hideLoader() {
     } else {
         calledOnce = true;
         main.style.visibility = "hidden";
-        showMsg("NO INTERNET <br/><br/> Please connect to internet first.", true);
+        showMsg(
+            "NO INTERNET <br/><br/> Please connect to internet first.",
+            true
+        );
     }
 }
 
@@ -74,7 +77,8 @@ function search() {
             // take input
             hasFocus = true;
             searchInput.focus();
-            document.getElementById("search-instruction").style.display = "block";
+            document.getElementById("search-instruction").style.display =
+                "block";
 
             setTimeout(() => {
                 searchInput.value = "";
@@ -114,7 +118,10 @@ function getAllComics(id) {
         .then((obj) => {
             if (obj.success) {
                 let comicHTML = "";
-                const comics = path == "/" || path == "/index.html" ? obj.data.slice(0, 4).reverse() : obj.data;
+                const comics =
+                    path == "/" || path == "/index.html"
+                        ? obj.data.slice(0, 4).reverse()
+                        : obj.data;
 
                 comics.forEach((comic) => {
                     comicHTML += `<a href="comic.html?comic_id=${
@@ -122,7 +129,9 @@ function getAllComics(id) {
                     }" class="card"><img class="image" src="${comic.title_img.replace(
                         "http://165.22.223.28",
                         baseURL
-                    )}" alt="comic image" /><h2 class="title">${comic.comic_title}</h2></a>`;
+                    )}" alt="comic image" /><h2 class="title">${
+                        comic.comic_title
+                    }</h2></a>`;
                 });
 
                 let eleId = path == "/search.html" ? "search_result" : id;
@@ -170,13 +179,19 @@ function getComicsByType(comic_type) {
                     }" class="card"><img class="image" src="${comic.title_img.replace(
                         "http://165.22.223.28",
                         baseURL
-                    )}" alt="comic image" /><h2 class="title">${comic.comic_title}</h2></a>`;
+                    )}" alt="comic image" /><h2 class="title">${
+                        comic.comic_title
+                    }</h2></a>`;
                 });
                 document.getElementById(type).innerHTML = comicHTML;
             } else if (!obj.success) {
                 showMsg(obj.error, true);
             } else {
-                showMsg(`GET COMICS BY TYPE: ${type} <br/><br/>` + "Problem with api", true);
+                showMsg(
+                    `GET COMICS BY TYPE: ${type} <br/><br/>` +
+                        "Problem with api",
+                    true
+                );
             }
         })
         .then(() => {
@@ -197,8 +212,8 @@ function showMsg(message, alert) {
     const msg = document.getElementById("msg");
     const msgType = document.getElementById("msg-type");
 
-    msgType.innerText = alert ? "💥 New Alert!" : "🔔 New Message";
-    msg.innerHTML = message + "<br/><br/><span id='close-text'>( Press 9 to close )</span>";
+    // msgType.innerText = alert ? "💥 New Alert!" : "🔔 New Message";
+    // msg.innerHTML = message + "<br/><br/><span id='close-text'>( Press 9 to close )</span>";
 
     layer.style.top = "0";
     msgBox.style.transform = "translate(-50%, -50%) scale(1)";
@@ -215,15 +230,15 @@ function showMsg(message, alert) {
 }
 
 // hide message
-function hideMsg(e) {
-    if (e.key == 9) {
-        layer.style.top = "-100vh";
-        msgBox.style.transform = "translate(-50%, -50%) scale(0)";
-        document.body.style.overflowY = "scroll";
+// function hideMsg(e) {
+//     if (e.key == 9) {
+//         layer.style.top = "-100vh";
+//         msgBox.style.transform = "translate(-50%, -50%) scale(0)";
+//         document.body.style.overflowY = "scroll";
 
-        document.removeEventListener("keypress", hideMsg);
-    }
-}
+//         document.removeEventListener("keypress", hideMsg);
+//     }
+// }
 
 // set localStorage
 function setLocalStorageItem(name, value) {

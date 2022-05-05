@@ -11,8 +11,10 @@ if (navigator.onLine) {
         .then((obj) => {
             if (obj.success) {
                 const comic = obj.read_comic;
-                const comicPageLoader = document.querySelector(".comic-page-loader");
-                document.getElementById("title").innerText = getParams("comic_name") + " - " + comic.episode_number;
+                const comicPageLoader =
+                    document.querySelector(".comic-page-loader");
+                document.getElementById("title").innerText =
+                    getParams("comic_name") + " - " + comic.episode_number;
 
                 const comicImages = comic.comic_images;
                 const totalPages = comic.comic_images.length;
@@ -22,7 +24,10 @@ if (navigator.onLine) {
                 let url = "";
                 let page = 1;
 
-                url = comicImages[page - 1]?.img_url.replace("https://165.22.223.28", baseURL);
+                url = comicImages[page - 1]?.img_url.replace(
+                    "https://165.22.223.28",
+                    baseURL
+                );
                 comicPage.src = "images/214x333.png";
                 showComicPage(url, comicPage, comicPageLoader);
 
@@ -30,13 +35,20 @@ if (navigator.onLine) {
                 function next() {
                     if (navigator.onLine) {
                         page++;
-                        url = comicImages[page - 1].img_url.replace("https://165.22.223.28", baseURL);
+                        url = comicImages[page - 1].img_url.replace(
+                            "https://165.22.223.28",
+                            baseURL
+                        );
                         showComicPage(url, comicPage, comicPageLoader);
 
-                        document.getElementById("current-page").innerText = page;
+                        document.getElementById("current-page").innerText =
+                            page;
                         document.getElementById("next").focus();
                     } else {
-                        showMsg("NO INTERNET <br/><br/> Please connect to internet first.", true);
+                        showMsg(
+                            "NO INTERNET <br/><br/> Please connect to internet first.",
+                            true
+                        );
                     }
                 }
 
@@ -44,13 +56,20 @@ if (navigator.onLine) {
                 function prev() {
                     if (navigator.onLine) {
                         page--;
-                        url = comicImages[page - 1].img_url.replace("https://165.22.223.28", baseURL);
+                        url = comicImages[page - 1].img_url.replace(
+                            "https://165.22.223.28",
+                            baseURL
+                        );
                         showComicPage(url, comicPage, comicPageLoader);
 
-                        document.getElementById("current-page").innerText = page;
+                        document.getElementById("current-page").innerText =
+                            page;
                         document.getElementById("previous").focus();
                     } else {
-                        showMsg("NO INTERNET <br/><br/> Please connect to internet first.", true);
+                        showMsg(
+                            "NO INTERNET <br/><br/> Please connect to internet first.",
+                            true
+                        );
                     }
                 }
 
@@ -63,7 +82,10 @@ if (navigator.onLine) {
                                 next();
                                 loading = true;
                             } else {
-                                showMsg("Please wait, we are loading your requested page.", false);
+                                showMsg(
+                                    "Please wait, we are loading your requested page.",
+                                    false
+                                );
                             }
                         } else {
                             showMsg("This is the last page!", false);
@@ -81,7 +103,10 @@ if (navigator.onLine) {
                                 prev();
                                 loading = true;
                             } else {
-                                showMsg("Please wait, we are loading your requested page.", false);
+                                showMsg(
+                                    "Please wait, we are loading your requested page.",
+                                    false
+                                );
                             }
                         } else {
                             showMsg("This is the first page!", false);
@@ -95,13 +120,19 @@ if (navigator.onLine) {
                         if (navigator.onLine) {
                             search();
                         } else {
-                            showMsg("NO INTERNET <br/><br/> Please connect to internet first.", true);
+                            showMsg(
+                                "NO INTERNET <br/><br/> Please connect to internet first.",
+                                true
+                            );
                         }
                     } else if (e.key == "SoftRight" || e.key == "0") {
                         if (navigator.onLine) {
                             window.history.back();
                         } else {
-                            showMsg("NO INTERNET <br/><br/> Please connect to internet first.", true);
+                            showMsg(
+                                "NO INTERNET <br/><br/> Please connect to internet first.",
+                                true
+                            );
                         }
                     } else if (e.key == "Enter") {
                         if (!zoomedIn && !loading) {
@@ -111,6 +142,42 @@ if (navigator.onLine) {
                             imageZoomOut();
                             zoomedIn = false;
                         }
+                    }
+                });
+                let nextBtn = document.getElementById("next");
+                let preBtn = document.getElementById("previous");
+                nextBtn.addEventListener("click", (e) => {
+                    if (page < totalPages) {
+                        if (!loading) {
+                            comicPageLoader.classList.remove("hide");
+                            comicPageLoader.classList.add("show");
+                            next();
+                            loading = true;
+                        } else {
+                            showMsg(
+                                "Please wait, we are loading your requested page.",
+                                false
+                            );
+                        }
+                    } else {
+                        showMsg("This is the last page!", false);
+                    }
+                });
+                preBtn.addEventListener("click", () => {
+                    if (page > 1) {
+                        if (!loading) {
+                            comicPageLoader.classList.remove("hide");
+                            comicPageLoader.classList.add("show");
+                            prev();
+                            loading = true;
+                        } else {
+                            showMsg(
+                                "Please wait, we are loading your requested page.",
+                                false
+                            );
+                        }
+                    } else {
+                        showMsg("This is the first page!", false);
                     }
                 });
             } else if (!obj.success) {
@@ -175,7 +242,8 @@ function imageZoomIn(imgID) {
     cy = 2;
     /* Set background properties for the result DIV */
     zoomedImage.style.backgroundImage = "url('" + img.src + "')";
-    zoomedImage.style.backgroundSize = img.width * cx + "px " + img.height * cy + "px";
+    zoomedImage.style.backgroundSize =
+        img.width * cx + "px " + img.height * cy + "px";
     /* Execute a function when someone moves the cursor over the image, or the lens: */
     // lens.addEventListener("mousemove", moveLens);
     /* And also for touch screens: */
@@ -192,7 +260,8 @@ function imageZoomIn(imgID) {
                 dirY = 0;
                 /* Set background properties for the result DIV */
                 zoomedImage.style.backgroundImage = "url('" + img.src + "')";
-                zoomedImage.style.backgroundSize = img.width * cx + "px " + img.height * cy + "px";
+                zoomedImage.style.backgroundSize =
+                    img.width * cx + "px " + img.height * cy + "px";
                 // reset lens position
                 moveLens(e);
             } else if (e.key == "ArrowDown" && cx >= 3) {
@@ -205,7 +274,8 @@ function imageZoomIn(imgID) {
                 dirY = 0;
                 /* Set background properties for the result DIV */
                 zoomedImage.style.backgroundImage = "url('" + img.src + "')";
-                zoomedImage.style.backgroundSize = img.width * cx + "px " + img.height * cy + "px";
+                zoomedImage.style.backgroundSize =
+                    img.width * cx + "px " + img.height * cy + "px";
                 // reset lens position
                 moveLens(e);
             }
@@ -269,7 +339,8 @@ function imageZoomIn(imgID) {
         zoomedImage.style.left = x2 + "px";
         zoomedImage.style.top = y2 + "px";
         /* Display what the lens "sees": */
-        zoomedImage.style.backgroundPosition = "-" + x * (cx - 0.24 * cx) + "px -" + y * (cy - 0.395 * cy) + "px";
+        zoomedImage.style.backgroundPosition =
+            "-" + x * (cx - 0.24 * cx) + "px -" + y * (cy - 0.395 * cy) + "px";
     }
 
     openFullscreen(zoomedImage);

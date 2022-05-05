@@ -146,6 +146,17 @@ if (navigator.onLine) {
                 });
                 let nextBtn = document.getElementById("next");
                 let preBtn = document.getElementById("previous");
+                let backBtn = document.getElementById("back");
+                backBtn.addEventListener("click", (e) => {
+                    if (navigator.onLine) {
+                        window.history.back();
+                    } else {
+                        showMsg(
+                            "NO INTERNET <br/><br/> Please connect to internet first.",
+                            true
+                        );
+                    }
+                });
                 nextBtn.addEventListener("click", (e) => {
                     if (page < totalPages) {
                         if (!loading) {

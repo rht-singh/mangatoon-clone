@@ -208,26 +208,26 @@ function getComicsByType(comic_type) {
 }
 
 // show message
-function showMsg(message, alert) {
-    const msg = document.getElementById("msg");
-    const msgType = document.getElementById("msg-type");
+// function showMsg(message, alert) {
+//     const msg = document.getElementById("msg");
+//     const msgType = document.getElementById("msg-type");
 
-    // msgType.innerText = alert ? "💥 New Alert!" : "🔔 New Message";
-    // msg.innerHTML = message + "<br/><br/><span id='close-text'>( Press 9 to close )</span>";
+//     // msgType.innerText = alert ? "💥 New Alert!" : "🔔 New Message";
+//     // msg.innerHTML = message + "<br/><br/><span id='close-text'>( Press 9 to close )</span>";
 
-    layer.style.top = "0";
-    msgBox.style.transform = "translate(-50%, -50%) scale(1)";
-    document.body.style.overflowY = "hidden";
+//     layer.style.top = "0";
+//     msgBox.style.transform = "translate(-50%, -50%) scale(1)";
+//     document.body.style.overflowY = "hidden";
 
-    document.body.click();
-    audio.play();
+//     document.body.click();
+//     audio.play();
 
-    if (alert && !calledOnce) {
-        hideLoader();
-    }
+//     if (alert && !calledOnce) {
+//         hideLoader();
+//     }
 
-    document.addEventListener("keypress", hideMsg);
-}
+//     document.addEventListener("keypress", hideMsg);
+// }
 
 // hide message
 // function hideMsg(e) {

@@ -2,7 +2,8 @@
 
 let calledOnce = false;
 let categoryCalled = false;
-const baseURL = "https://kaiostestapi.quadbtech.com";
+const baseURL = "https://kaiosapi.quadbtech.com";
+// const baseURL = "http://localhost:8000";
 
 // notification sound
 const audio = new Audio("sounds/notification.mp3");
